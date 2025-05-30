@@ -1,0 +1,65 @@
+# Python-specific ignores
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info
+.venv
+.env
+env/
+
+# IDE-specific ignores
+.idea/
+*.iml
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+*.swo
+*.code-workspace
+
+# OS-specific ignores
+.DS_Store
+Thumbs.db
+ehthumbs.db
+*.log
+*.bak
+*.tmp
+*.swp
+*.swo
+
+# Database files
+*.sqlite
+*.db
+
+# Test files
+tests/
+test_*.py
+
+# Other
+*.py[cod]
+.pytest_cache/
+*.egg
+*.whl
+*.mo
+*.pot
+*.log
+*.ini
+*.lock
+*.orig
+*.rej
+*.py~
+*.py.swp
+*.bak
+*.tmp
+*.swp
+*.swo
+*.orig
+*.rej
+*.py[cod]
+
+# Static files
+static/
+media/
