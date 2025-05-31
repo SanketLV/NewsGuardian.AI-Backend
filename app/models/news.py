@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List, Optional, Dict
+from typing import List, Optional, Literal
 
 
 class Source(BaseModel):
@@ -8,6 +8,7 @@ class Source(BaseModel):
 
 
 class Article(BaseModel):
+    id: str
     title: str
     description: str
     content: Optional[str] = None
@@ -20,3 +21,8 @@ class Article(BaseModel):
 class NewsResponse(BaseModel):
     totalArticles: int
     articles: List[Article]
+
+
+class SingleNewsArticleResponse(BaseModel):
+    article: Article
+    Source: Literal["cache", "api"] = "cache"

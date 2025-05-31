@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Query, HTTPException, status
 from typing import Optional
-from app.models.news import NewsResponse
-from app.services.news_service import fetch_news
+from app.models.news import NewsResponse, SingleNewsArticleResponse
+from app.services.news_service import fetch_news, fetch_news_by_id
 import httpx
 
 router = APIRouter(prefix="/news", tags=["news"])
@@ -42,3 +42,25 @@ async def get_news(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail=f"Error fetching news: {str(e)}",
         )
+
+
+@router.get("/{artilce_id}", response_model=SingleNewsArticleResponse)
+async def get_news_by_id(artilce_id: str):
+    try:
+        article = await fetch_news_by_id(artilce_id)
+
+        if article:
+            return {"article": article, "source": "cache"}
+
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Article not found",
+        )
+    except httpx.HTTPStatusError as e:
+        if e.response.status_code == 403:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="API Key invalid or rate limit exceeded",
+            )
+
+        raise HTTPException(status_code=e.response.status_code, detail=str(e))

@@ -1,0 +1,55 @@
+import redis.asyncio as aioredis
+import json
+from typing import Optional, Dict, Any
+from app.core.config import settings
+
+redis_client: Optional[aioredis.Redis] = None
+
+
+async def get_redis() -> aioredis.Redis:
+    """Get Redis client instance."""
+    global redis_client
+    if redis_client is None:
+        redis_client = await aioredis.from_url(
+            settings.REDIS_URL, encoding="utf-8", decode_responses=True
+        )
+    return redis_client
+
+
+async def close_redis():
+    """Close Redis connection."""
+    global redis_client
+    if redis_client:
+        await redis_client.close()
+
+
+async def cache_article(article_id: str, atricle_data: Dict[str, Any]) -> None:
+    """Cache an article data in redis."""
+    redis = await get_redis()
+    await redis.setex(
+        f"article:{article_id}", settings.REDIS_ARTICLES_TTL, json.dumps(atricle_data)
+    )
+
+
+async def get_cached_article(article_id: str) -> Optional[Dict[str, Any]]:
+    """Get cached article data from redis."""
+    redis = await get_redis()
+    cached_data = await redis.get(f"article:{article_id}")
+    if cached_data:
+        return json.loads(cached_data)
+    return None
+
+
+async def cache_articles_batch(articles: Dict[str, Dict[str, Any]]) -> None:
+    """cache multiple articles in redis using pipeline for better performance"""
+    redis = await get_redis()
+    pipe = redis.pipeline()
+
+    for article_id, article_data in articles.items():
+        pipe.setex(
+            f"article:{article_id}",
+            settings.REDIS_ARTICLES_TTL,
+            json.dumps(article_data),
+        )
+
+    await pipe.execute()

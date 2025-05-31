@@ -1,16 +1,23 @@
 from fastapi import FastAPI
 from dotenv import load_dotenv
 from app.api.routes import news
-import os
+from contextlib import asynccontextmanager
+from app.services.redis import close_redis
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    yield
+    # Shutdown
+    await close_redis()
+
 
 load_dotenv()
-app = FastAPI(title="NewsGuardian.AI", version="1.0.0")
-
-gnews_api_key = os.getenv("GNEWS_API_KEY")
-
+app = FastAPI(lifespan=lifespan, title="NewsGuardian.AI", version="1.0.0")
 
 # Include routers
-app.include_router(news.router)
+app.include_router(news.router, prefix="/api/v1", tags=["news"])
 
 
 @app.get("/")
