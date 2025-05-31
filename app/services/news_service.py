@@ -57,11 +57,21 @@ async def fetch_news(
 
 
 async def fetch_news_by_id(article_id: str) -> Optional[Dict[str, Any]]:
-    article = await get_cached_article(article_id)
-
-    if article:
-        print(f"Fetched article with ID {article_id} from cache.")
-        return article
-    else:
+    """Fetch a cached news article by its ID.
+    
+    Args:
+        article_id: The unique identifier for the article
+        
+    Returns:
+        The article data if found in cache, None otherwise
+    """
+    try:
+        article = await get_cached_article(article_id)
+        if article:
+            print(f"Fetched article with ID {article_id} from cache.")
+            return article
         print(f"Article with ID {article_id} not found in cache.")
+        return None
+    except Exception as e:
+        print(f"Error fetching article {article_id}: {e}")
         return None
