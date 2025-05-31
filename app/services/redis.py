@@ -48,11 +48,18 @@ async def cache_article(article_id: str, article_data: Dict[str, Any]) -> None:
 
 async def get_cached_article(article_id: str) -> Optional[Dict[str, Any]]:
     """Get cached article data from redis."""
-    redis = await get_redis()
-    cached_data = await redis.get(f"article:{article_id}")
-    if cached_data:
-        return json.loads(cached_data)
-    return None
+    try:
+        redis = await get_redis()
+        cached_data = await redis.get(f"article:{article_id}")
+        if cached_data:
+            return json.loads(cached_data)
+        return None
+    except json.JSONDecodeError as e:
+        print(f"Failed to decode article {article_id}: {e}")
+        return None
+    except Exception as e:
+        print(f"Failed to get article {article_id} from cache: {e}")
+        return None
 
 
 async def cache_articles_batch(articles: Dict[str, Dict[str, Any]]) -> None:
