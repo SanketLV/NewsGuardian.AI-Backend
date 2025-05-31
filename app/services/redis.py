@@ -45,15 +45,22 @@ async def get_cached_article(article_id: str) -> Optional[Dict[str, Any]]:
 
 
 async def cache_articles_batch(articles: Dict[str, Dict[str, Any]]) -> None:
-    """cache multiple articles in redis using pipeline for better performance"""
-    redis = await get_redis()
-    pipe = redis.pipeline()
+    """Cache multiple articles in redis using pipeline for better performance."""
+    if not articles:
+        return
 
-    for article_id, article_data in articles.items():
-        pipe.setex(
-            f"article:{article_id}",
-            settings.REDIS_ARTICLES_TTL,
-            json.dumps(article_data),
-        )
+    try:
+        redis = await get_redis()
+        pipe = redis.pipeline()
 
-    await pipe.execute()
+        for article_id, article_data in articles.items():
+            pipe.setex(
+                f"article:{article_id}",
+                settings.REDIS_ARTICLES_TTL,
+                json.dumps(article_data),
+            )
+
+        await pipe.execute()
+    except Exception as e:
+        print(f"Failed to cache articles batch: {e}")
+        raise
