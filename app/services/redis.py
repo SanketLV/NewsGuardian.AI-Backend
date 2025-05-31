@@ -23,12 +23,16 @@ async def close_redis():
         await redis_client.close()
 
 
-async def cache_article(article_id: str, atricle_data: Dict[str, Any]) -> None:
+async def cache_article(article_id: str, article_data: Dict[str, Any]) -> None:
     """Cache an article data in redis."""
-    redis = await get_redis()
-    await redis.setex(
-        f"article:{article_id}", settings.REDIS_ARTICLES_TTL, json.dumps(atricle_data)
-    )
+    try:
+        redis = await get_redis()
+        await redis.setex(
+            f"article:{article_id}", settings.REDIS_ARTICLES_TTL, json.dumps(article_data)
+        )
+    except Exception as e:
+        print(f"Failed to cache article {article_id}: {e}")
+        raise
 
 
 async def get_cached_article(article_id: str) -> Optional[Dict[str, Any]]:
