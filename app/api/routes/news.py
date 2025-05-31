@@ -46,10 +46,8 @@ async def get_news(
 
 @router.get("/{article_id}", response_model=SingleNewsArticleResponse)
 async def get_news_by_id(article_id: str):
-    article = await fetch_news_by_id(article_id)
-    return SingleNewsArticleResponse(article=article)
     try:
-        article = await fetch_news_by_id(artilce_id)
+        article = await fetch_news_by_id(article_id)
 
         if article:
             return {"article": article, "source": "cache"}
