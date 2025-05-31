@@ -26,7 +26,12 @@ async def close_redis():
     """Close Redis connection."""
     global redis_client
     if redis_client:
-        await redis_client.close()
+        try:
+            await redis_client.close()
+        except Exception as e:
+            print(f"Error closing Redis connection: {e}")
+        finally:
+            redis_client = None
 
 
 async def cache_article(article_id: str, article_data: Dict[str, Any]) -> None:
