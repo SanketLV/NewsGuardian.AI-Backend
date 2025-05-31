@@ -10,9 +10,15 @@ async def get_redis() -> aioredis.Redis:
     """Get Redis client instance."""
     global redis_client
     if redis_client is None:
-        redis_client = await aioredis.from_url(
-            settings.REDIS_URL, encoding="utf-8", decode_responses=True
-        )
+        try:
+            redis_client = await aioredis.from_url(
+                settings.REDIS_URL, encoding="utf-8", decode_responses=True
+            )
+            # Test the connection
+            await redis_client.ping()
+        except Exception as e:
+            print(f"Failed to connect to Redis: {e}")
+            raise
     return redis_client
 
 
