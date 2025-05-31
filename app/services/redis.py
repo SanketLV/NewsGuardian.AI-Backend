@@ -72,6 +72,13 @@ async def cache_articles_batch(articles: Dict[str, Dict[str, Any]]) -> None:
         pipe = redis.pipeline()
 
         for article_id, article_data in articles.items():
+            try:
+                # Validate JSON serialization before adding to pipeline
+                json.dumps(article_data)
+            except (TypeError, ValueError) as e:
+                print(f"Failed to serialize article {article_id}: {e}")
+                continue
+
             pipe.setex(
                 f"article:{article_id}",
                 settings.REDIS_ARTICLES_TTL,
