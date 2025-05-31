@@ -25,4 +25,4 @@ class NewsResponse(BaseModel):
 
 class SingleNewsArticleResponse(BaseModel):
     article: Article
-    Source: Literal["cache", "api"] = "cache"
+    source: Literal["cache", "api"] = "cache"
