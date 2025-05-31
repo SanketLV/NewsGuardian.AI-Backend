@@ -61,6 +61,6 @@ async def get_news_by_id(artilce_id: str):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="API Key invalid or rate limit exceeded",
-            )
+            ) from e
 
-        raise HTTPException(status_code=e.response.status_code, detail=str(e))
+        raise HTTPException(status_code=e.response.status_code, detail=str(e)) from e
