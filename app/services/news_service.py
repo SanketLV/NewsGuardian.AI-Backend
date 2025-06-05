@@ -156,7 +156,8 @@ class UniversalArticleScraper:
             "main article",
             '[role="main"] article',
             "main",
-            '[role="main]',
+-            '[role="main]',
++            '[role="main"]',
         ]
 
         for selector in semantic_selectors:
