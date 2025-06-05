@@ -63,3 +63,4 @@ test_*.py
 # Static files
 static/
 media/
+.qodo
