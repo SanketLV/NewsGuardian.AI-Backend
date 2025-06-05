@@ -15,10 +15,8 @@ async def lifespan(app: FastAPI):
     await close_redis()
 
 
-origins = os.getenv("ALLOWED_ORIGINS")
-
-
 load_dotenv()
+origins = os.getenv("ALLOWED_ORIGINS")
 app = FastAPI(lifespan=lifespan, title="NewsGuardian.AI", version="1.0.0")
 app.add_middleware(
     CORSMiddleware,
