@@ -1,10 +1,10 @@
 from pydantic import BaseModel
-from typing import List, Optional, Literal
+from typing import List, Optional, Any, Dict
 
 
 class Source(BaseModel):
     name: str
-    url: str
+    url: Optional[str] = None
 
 
 class Article(BaseModel):
@@ -16,6 +16,7 @@ class Article(BaseModel):
     image: Optional[str] = None
     publishedAt: str
     source: Source
+    content_source: Optional[str] = "api"  # "api" or "scraped"
 
 
 class NewsResponse(BaseModel):
@@ -23,6 +24,16 @@ class NewsResponse(BaseModel):
     articles: List[Article]
 
 
+class ArticleMetadata(BaseModel):
+    content_stats: Optional[Dict[str, Any]] = None
+    source_info: Optional[Dict[str, Any]] = None
+    publication_info: Optional[Dict[str, Any]] = None
+    content_enhancement: Optional[Dict[str, Any]] = None
+    scraping_error: Optional[str] = None
+
+
 class SingleNewsArticleResponse(BaseModel):
     article: Article
-    source: Literal["cache", "api"] = "cache"
+    source: str
+    enhanced: bool = False
+    metadata: Optional[ArticleMetadata] = None
