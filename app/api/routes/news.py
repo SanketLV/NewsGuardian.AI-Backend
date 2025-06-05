@@ -122,7 +122,7 @@ async def get_news_by_id(
                         else:
                             article["content_source"] = "api"
                             logger.warning(
-                                f"Scrapped content for {article_id} was not better than original content"
+                                f"Scraped content for {article_id} was not better than original content"
                             )
                     else:
                         article["content_source"] = "api"

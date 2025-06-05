@@ -50,7 +50,7 @@ class UniversalArticleScraper:
 
                 return None
         except Exception as e:
-            logger.error(f"Error scrapping article from {url}: {str(e)}")
+            logger.error(f"Error scraping article from {url}: {str(e)}")
             return None
 
     def _clean_soup(self, soup: BeautifulSoup):
@@ -175,7 +175,7 @@ class UniversalArticleScraper:
         common_selectors = [
             # Article content containers
             ".article-content p, .article-body p, .post-content p",
-            ".entry-xontent p, .content p, .story-content p",
+            ".entry-content p, .content p, .story-content p",
             ".article p, .post p, .story p",
             # Generic content containers
             ".content-body p, .main-content p, .page-content p",
@@ -333,7 +333,7 @@ async def enhance_articles_with_full_content(
                 logger.warning(f"Scraping returned insufficient content for {url}")
         except Exception as e:
             logger.warning(
-                f"Failed to scrape content from {article.get("url", "")}: {str(e)}"
+                f"Failed to scrape content from {article.get('url', '')}: {str(e)}"
             )
             article["content_source"] = "api"
 
